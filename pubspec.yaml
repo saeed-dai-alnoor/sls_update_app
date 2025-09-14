@@ -1,0 +1,36 @@
+name: sls_app
+description: "A new Flutter project."
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  get: ^4.7.2
+  sliding_up_panel: ^2.0.0+1
+  fl_chart: ^1.0.0
+  geolocator: ^14.0.1 # For location access
+  latlong2: ^0.9.0 # For distance calculation
+  permission_handler: ^12.0.0+1 # For location permissions (optional but recommended)
+  gauge_indicator: ^0.4.3
+  flutter_localizations:
+    sdk: flutter
+  get_storage: ^2.1.1
+  table_calendar: ^3.2.0
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
