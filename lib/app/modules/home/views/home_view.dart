@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -111,9 +113,9 @@ class HomeView extends GetView<HomeController> {
                       homeController.logOut(context); // Log in if not logged in
                       // Toggle login/logout state
                       Future.delayed(Duration.zero, () {
-                        print(
-                          'Checked out successfully: ${homeController.logoutTime.value}',
-                        );
+                        // print(
+                        //   'Checked out successfully: ${homeController.logoutTime.value}',
+                        // );
                         Get.to(() => CheckDoneView());
                       });
                     } else {
@@ -146,7 +148,7 @@ class HomeView extends GetView<HomeController> {
           },
           icon: const Icon(Icons.person_outlined, size: 32),
         ),
-        title: Text('afternoor'.tr + ' User'),
+        title: Text('${'afternoor'.tr} User'),
         actions: [
           IconButton(
             onPressed: () {

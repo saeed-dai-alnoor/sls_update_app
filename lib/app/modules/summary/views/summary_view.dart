@@ -224,83 +224,81 @@ class SummaryView extends GetView<SummaryController> {
           ),
           Align(
             alignment: Alignment.center,
-            child: Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CustomIconTextButton(
-                          icon: Icons.login_outlined,
-                          iconColor: Colors.green,
-
-                          title: 'checkedIn'.tr,
-                          subtitle: Obx(
-                            () => Text(
-                              summarryController.loginTime.value,
-                              style: TextStyle(
-                                fontSize: 21,
-                                fontWeight: FontWeight.bold,
-                              ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+            
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomIconTextButton(
+                        icon: Icons.login_outlined,
+                        iconColor: Colors.green,
+            
+                        title: 'checkedIn'.tr,
+                        subtitle: Obx(
+                          () => Text(
+                            summarryController.loginTime.value,
+                            style: TextStyle(
+                              fontSize: 21,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          lastTitle: '---',
-
-                          backgroundColor: Colors.green,
-                          textColor: Colors.white,
-                          onPressed: () {},
                         ),
+                        lastTitle: '---',
+            
+                        backgroundColor: Colors.green,
+                        textColor: Colors.white,
+                        onPressed: () {},
                       ),
-
-                      Expanded(
-                        child: CustomIconTextButton(
-                          icon: Icons.logout_rounded,
-                          iconColor: Color(0xFFde6a6b),
-                          title: 'checkedOut'.tr,
-                          subtitle: Obx(
-                            () => Text(
-                              summarryController.logoutTime.value.isEmpty
-                                  ? '00:00:00'
-                                  : summarryController.logoutTime.value,
-                              style: TextStyle(
-                                fontSize: 21,
-                                fontWeight: FontWeight.bold,
-                              ),
+                    ),
+            
+                    Expanded(
+                      child: CustomIconTextButton(
+                        icon: Icons.logout_rounded,
+                        iconColor: Color(0xFFde6a6b),
+                        title: 'checkedOut'.tr,
+                        subtitle: Obx(
+                          () => Text(
+                            summarryController.logoutTime.value.isEmpty
+                                ? '00:00:00'
+                                : summarryController.logoutTime.value,
+                            style: TextStyle(
+                              fontSize: 21,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          lastTitle: '',
-
-                          onPressed: () {},
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 18),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFde6a6b),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 90,
-                        vertical: 8,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(28),
+                        lastTitle: '',
+            
+                        onPressed: () {},
                       ),
                     ),
-                    child: Text(
-                      'submit'.tr,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 23,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  ],
+                ),
+                SizedBox(height: 18),
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFde6a6b),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 90,
+                      vertical: 8,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(28),
                     ),
                   ),
-                ],
-              ),
+                  child: Text(
+                    'submit'.tr,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 23,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -325,13 +323,13 @@ class NumberOfWeek extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Center(child: Text('$num')),
       width: 45,
       height: 45,
       decoration: BoxDecoration(
         border: BoxBorder.all(color: Colors.grey[300]!, width: 1),
         shape: BoxShape.circle,
       ),
+      child: Center(child: Text('$num')),
     );
   }
 }
@@ -356,8 +354,8 @@ class CustomIconTextButton extends StatelessWidget {
     this.backgroundColor,
     this.textColor,
 
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

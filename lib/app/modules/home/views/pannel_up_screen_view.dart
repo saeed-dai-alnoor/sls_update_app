@@ -36,7 +36,7 @@ class PannelUpScreenView extends GetView {
                   Column(
                     children: [
                       Text(
-                        'checkedIn'.tr + ':',
+                        '${'checkedIn'.tr}:',
                         style: TextStyle(fontSize: 20),
                       ),
                       Obx(
@@ -107,8 +107,8 @@ class PannelUpScreenView extends GetView {
               child: Text('average'.tr, style: TextStyle(fontSize: 18)),
             ),
             SizedBox(
-              child: MyBarGraph(weeklySummary: weeklySummary),
               height: 200,
+              child: MyBarGraph(weeklySummary: weeklySummary),
             ),
           ],
         ),

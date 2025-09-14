@@ -29,8 +29,8 @@ class LocationController extends GetxController {
       );
       // true meter إذا كنت ضمن نطاف 100
       isSuccess.value = distance <= 150; // 150 متر
-      print('Is within range: ${isSuccess.value}');
-      print('The distance: $distance');
+      // print('Is within range: ${isSuccess.value}');
+      // print('The distance: $distance');
     } catch (e) {
       Get.snackbar("Oops!", e.toString());
     } finally {

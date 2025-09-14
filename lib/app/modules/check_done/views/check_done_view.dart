@@ -74,7 +74,7 @@ class CheckDoneView extends GetView<CheckDoneController> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'checkedIn'.tr + ':',
+                '${'checkedIn'.tr}:',
                 style: TextStyle(fontSize: 26, color: Colors.black),
               ),
               Obx(
@@ -90,7 +90,7 @@ class CheckDoneView extends GetView<CheckDoneController> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'checkedOut'.tr + ':',
+                '${'checkedOut'.tr}:',
                 style: TextStyle(fontSize: 26, color: Colors.black),
               ),
               Obx(
@@ -134,12 +134,12 @@ class CheckDoneView extends GetView<CheckDoneController> {
               // homeController.isLoggedIn.value = true;
               Get.back();
             },
-            child: Text('done'.tr, style: TextStyle(fontSize: 28)),
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
               padding: EdgeInsets.symmetric(vertical: 8, horizontal: 30),
               backgroundColor: Colors.blue,
             ),
+            child: Text('done'.tr, style: TextStyle(fontSize: 28)),
           ),
         ],
       ),
