@@ -1,5 +1,8 @@
 Map<String, String> ar = {
   // home translate
+  "morning": "صباح الخير",
+  "afternoon": "مساء الخير",
+  "evening": "مساء الخير",
   "ok": "حسناً",
   "scope": "خارج النطاق",
   "messageScope": "لا يسمح لك بالتسجيل خارج نطاق العمل",

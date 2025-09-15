@@ -1,5 +1,8 @@
 Map<String, String> en = {
   // home translate
+  "morning": "Good Morning",
+  "afternoon": "Good Afternoon",
+  "evening": "Good Evening",
   "scope": "Out of Scope",
   "messageScope": "You are not allowed to record outside of the scope of work",
   "ok": "Ok",

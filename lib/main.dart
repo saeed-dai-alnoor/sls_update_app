@@ -24,6 +24,7 @@ void main()  async{
   Get.put(SummaryController());
   Get.put(HomeController());
   Get.put(CalenarController());
+  
   runApp(
     GetMaterialApp(
       title: "Application",

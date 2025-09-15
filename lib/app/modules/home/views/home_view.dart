@@ -1,13 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:sls_app/app/modules/check_done/views/check_done_view.dart';
 import 'package:sls_app/app/modules/home/controllers/location_controller.dart';
 import 'package:sls_app/app/modules/home/views/pannel_up_screen_view.dart';
-
+import 'package:sls_app/app/widgets/loading_overlay.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -26,135 +26,160 @@ class HomeView extends GetView<HomeController> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: SlidingUpPanel(
-        maxHeight: pannelMaxHeight,
-        minHeight: panelMinHeight,
+      body: Obx(() {
+        return LoadingOverlay(
+          isLoading: locationController.isLoading.value,
+          child: SlidingUpPanel(
+            maxHeight: pannelMaxHeight,
+            minHeight: panelMinHeight,
 
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-        parallaxEnabled: true,
-        parallaxOffset: 0.5,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+            parallaxEnabled: true,
+            border: Border.all(color: Colors.black12, width: 2),
+            parallaxOffset: 0.5,
 
-        panelBuilder: (sc) =>
-            SingleChildScrollView(controller: sc, child: PannelUpScreenView()),
-        // main sls_app
-        body: Column(
-          children: [
-            Column(
+            panelBuilder: (sc) => SingleChildScrollView(
+              controller: sc,
+              child: PannelUpScreenView(),
+            ),
+            // main sls_app
+            body: Stack(
+              alignment: Alignment.center, // توسيط كل العناصر في الـ Stack
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 25,
-                    vertical: 16,
-                  ),
+                Positioned(
+                  top: -5,
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(18),
-                    ),
+                    margin: EdgeInsets.only(top: 12),
+                    child: SizedBox(
+                      height: 100,
 
-                    child: Center(
-                      child: Text(
-                        'intelligence'.tr,
-                        style: TextStyle(fontSize: 20),
+                      child: Card(
+                        color: Colors.grey[50],
+                        elevation: 0.5,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(3), // الزوايا
+                          side: BorderSide(
+                            color: Colors.black12, // لون البوردر
+                            width: 2, // سماكة البوردر
+                          ),
+                        ),
+
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 25),
+                            child: Text(
+                              'intelligence'.tr,
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-                MaterialButton(
-                  child: Column(
-                    children: [
-                      Image.asset(
-                        'assets/images/fingerprint.png',
-                        height: 200,
-                        width: 200,
-                      ),
-                      Obx(() {
-                        if (locationController.isLoading.value) {
-                          return SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.grey,
-                              ),
-                            ),
-                          );
-                        }
-                        return Text(
-                          !homeController.isLoggedIn.value
-                              ? 'checkedIn'.tr
-                              : 'checkedOut'.tr,
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        );
-                      }),
-                    ],
-                  ),
-                  onPressed: () async {
-                    await locationController.verifyLocation();
 
-                    if (!homeController.isLoggedIn.value &&
-                        locationController.isSuccess.value) {
-                      homeController.logIn(
-                        context,
-                      ); // Log out if already logged in
-                      homeController.markAttendance(
-                        homeController.selectedDate.value,
-                      ); // Mark attendance for today
-                      homeController.toggleAuth(); // Toggle login/logout state
-                    } else if (homeController.isLoggedIn.value &&
-                        locationController.isSuccess.value) {
-                      homeController.toggleAuth();
-                      homeController.logOut(context); // Log in if not logged in
-                      // Toggle login/logout state
-                      Future.delayed(Duration.zero, () {
-                        // print(
-                        //   'Checked out successfully: ${homeController.logoutTime.value}',
-                        // );
-                        Get.to(() => CheckDoneView());
-                      });
-                    } else {
-                      // 👇 Show dialog ONLY ONCE when out of range (before showing text)
-                      Future.delayed(Duration(seconds: 50), () {
-                        Get.defaultDialog(
-                          title: "📍 Oops!",
-                          middleText: 'messageScope'.tr,
-                          textConfirm: 'ok'.tr,
-                          confirmTextColor: Colors.white,
-                          onConfirm: () {
-                            Get.back(); // Close the dialog
+                // 1. أيقونة Lottie (الطبقة السفلية)
+                // هذا هو الزر الفعلي
+                Positioned(
+                  top: 40,
+                  child: GestureDetector(
+                    onTap: locationController.isLoading.value
+                        ? null
+                        : () async {
+                            // المنطق لم يتغير
+                            locationController.isLoading.value = true;
+                            await locationController.verifyLocation();
+
+                            if (locationController.isSuccess.value) {
+                              if (homeController.isLoggedIn.value) {
+                                homeController.logOut(context);
+                                Get.to(() => CheckDoneView());
+                              } else {
+                                homeController.logIn(context);
+                                homeController.markAttendance(
+                                  homeController.selectedDate.value,
+                                );
+                              }
+                              homeController.toggleAuth();
+                            } else {
+                              Get.defaultDialog(
+                                title: "📍 Oops!",
+                                middleText: 'messageScope'.tr,
+                                textConfirm: 'ok'.tr,
+                                confirmTextColor: Colors.white,
+                                onConfirm: () => Get.back(),
+                              );
+                            }
+                            locationController.isLoading.value = false;
                           },
-                        );
-                      });
+                    child: Lottie.asset(
+                      'assets/animations/fingerprint.json',
+                      width: 300,
+                      height: 320,
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+
+                // 2. النص (الطبقة العلوية)
+                // نستخدم Positioned لتحديد مكان النص بدقة
+                Positioned(
+                  top:
+                      coverHeight -
+                      profileHeight /
+                          81, // <--- المسافة من أسفل الـ Stack (تحكم فيها كما تريد)
+                  child: Obx(() {
+                    if (locationController.isLoading.value) {
+                      // حاوية فارغة لإخفاء النص
+                      return const SizedBox.shrink();
                     }
-                  },
+                    return Text(
+                      !homeController.isLoggedIn.value
+                          ? 'checkedIn'.tr
+                          : 'checkedOut'.tr,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black, // تأكد من أن لون النص واضح
+                      ),
+                    );
+                  }),
                 ),
               ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      }),
 
       // appBar sls_app
       appBar: AppBar(
+        backgroundColor: Color(0xFF5e4eaf),
         leading: IconButton(
           onPressed: () {
             Get.toNamed('/person-info');
           },
-          icon: const Icon(Icons.person_outlined, size: 32),
+          icon: const Icon(
+            Icons.person_outlined,
+            size: 28,
+            color: Colors.white,
+          ),
         ),
-        title: Text('${'afternoor'.tr} User'),
+        title: Obx(() {
+          return Text(
+            '${controller.greetingKey.value.tr} user', // استخدام المتغير من الـ controller
+            style: const TextStyle(fontSize: 22, color: Colors.white),
+          );
+        }),
         actions: [
           IconButton(
             onPressed: () {
               Get.toNamed('/notifications');
             },
-            icon: const Icon(Icons.notifications_outlined, size: 32),
+            icon: const Icon(
+              Icons.notifications_outlined,
+              size: 28,
+              color: Colors.white,
+            ),
           ),
         ],
       ),

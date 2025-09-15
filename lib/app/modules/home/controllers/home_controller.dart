@@ -5,7 +5,7 @@ import 'package:sls_app/app/modules/theme/controllers/theme_controller.dart';
 
 class HomeController extends GetxController {
   var isLoggedIn = false.obs;
-
+  var greeting = ''.obs; // متغير لتخزين التحية
   // وقت الدخول
   var loginTime = '00:00:00'.obs;
   // لحساب المدة بين الدخول والخروج في حالة تغير اللغة
@@ -22,6 +22,20 @@ class HomeController extends GetxController {
   Rx<DateTime> selectedDate = DateTime.now().obs;
   RxMap<DateTime, bool> attendanceRecords = <DateTime, bool>{}.obs;
   final attendanceDates = <DateTime, dynamic>{}.obs;
+
+  var greetingKey = ''.obs; // متغير لتخزين مفتاح التحية (Key)
+  // دالة لتحديد التحية بناءً على الوقت
+  void _updateGreetingKey() {
+    final hour = DateTime.now().hour;
+
+    if (hour < 12) {
+      greetingKey.value = 'morning'; // خزّن المفتاح فقط
+    } else if (hour < 17) {
+      greetingKey.value = 'afternoon'; // خزّن المفتاح فقط
+    } else {
+      greetingKey.value = 'evening'; // خزّن المفتاح فقط
+    }
+  }
 
   // دالة لتسجيل الحضور
   void markAttendance(DateTime date) {
@@ -91,6 +105,7 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     Get.lazyPut(() => ThemeController());
+    _updateGreetingKey(); // استدعاء الدالة لتعيين المفتاح الأوليس
   }
 
   @override

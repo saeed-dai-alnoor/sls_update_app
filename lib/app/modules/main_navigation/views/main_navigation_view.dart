@@ -5,12 +5,10 @@ import 'package:sls_app/app/modules/home/views/home_view.dart';
 import 'package:sls_app/app/modules/more/views/more_view.dart';
 import 'package:sls_app/app/modules/requests/views/requests_view.dart';
 import 'package:sls_app/app/modules/summary/views/summary_view.dart';
-
 import '../controllers/main_navigation_controller.dart';
 
 class MainNavigationView extends GetView<MainNavigationController> {
   MainNavigationView({super.key});
-
   final MainNavigationController navController = Get.put(
     MainNavigationController(),
   );
@@ -32,7 +30,7 @@ class MainNavigationView extends GetView<MainNavigationController> {
       ), // fotter sls_app
       bottomNavigationBar: Obx(
         () => BottomNavigationBar(
-          fixedColor: const Color(0xff0071bc),
+          fixedColor: Color(0xFF5e4eaf),
           type: BottomNavigationBarType.fixed,
           currentIndex: navController.currentIndex.value,
           onTap: (index) => navController.changePage(index),

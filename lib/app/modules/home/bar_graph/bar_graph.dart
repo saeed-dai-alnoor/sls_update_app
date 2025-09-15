@@ -37,19 +37,19 @@ class MyBarGraph extends StatelessWidget {
               getTitlesWidget: (value, meta) {
                 switch (value.toInt()) {
                   case 0:
-                    return  Text('sun'.tr);
+                    return Text('sun'.tr);
                   case 1:
-                    return  Text('mon'.tr);
+                    return Text('mon'.tr);
                   case 2:
-                    return  Text('tue'.tr);
+                    return Text('tue'.tr);
                   case 3:
-                    return  Text('wed'.tr);
+                    return Text('wed'.tr);
                   case 4:
-                    return  Text('thu'.tr);
+                    return Text('thu'.tr);
                   case 5:
-                    return  Text('fri'.tr);
+                    return Text('fri'.tr);
                   case 6:
-                    return  Text('sat'.tr);
+                    return Text('sat'.tr);
                   default:
                     return const Text('');
                 }
@@ -64,7 +64,7 @@ class MyBarGraph extends StatelessWidget {
                 barRods: [
                   BarChartRodData(
                     toY: data.y,
-                    color: Colors.grey[700],
+                    color: Color(0xFF5e4eaf),
                     width: 15,
                     borderRadius: BorderRadius.circular(5),
                     backDrawRodData: BackgroundBarChartRodData(

@@ -16,11 +16,13 @@ class LocationController extends GetxController {
   Future<void> verifyLocation() async {
     isLoading.value = true;
     try {
-      await Future.delayed(Duration(seconds: 2));
+     
       Position pos = await Geolocator.getCurrentPosition();
       // print("إحداثياتي: ${pos.latitude}, ${pos.longitude}");
 
-      const target = LatLng(15.648026, 32.621937); // إحداثياتك هنا
+      // const target = LatLng(15.648026, 32.621937); // إحداثياتك هنا
+
+      const target = LatLng(15.643293, 32.612374);
       double distance = _calculateDistance(
         pos.latitude,
         pos.longitude,

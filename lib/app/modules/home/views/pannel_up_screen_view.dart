@@ -24,11 +24,12 @@ class PannelUpScreenView extends GetView {
       shrinkWrap: true,
 
       children: [
-        Icon(Icons.keyboard_arrow_up_sharp, size: 40, color: Color(0xff0071bc)),
+        Icon(Icons.keyboard_arrow_up_sharp, size: 40, color: Color(0xFF5e4eaf)),
         Column(
           children: [
             Container(
               height: 200.0,
+
               padding: const EdgeInsets.all(16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -45,7 +46,7 @@ class PannelUpScreenView extends GetView {
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xff0071bc),
+                            color: Color(0xFF5e4eaf),
                           ),
                         ),
                       ),
@@ -54,9 +55,10 @@ class PannelUpScreenView extends GetView {
                   Column(
                     children: [
                       Image.asset(
-                        'assets/images/download.jpeg',
-                        height: 100,
-                        width: 100,
+                        'assets/images/logo.png',
+                        height: 70,
+                        width: 130,
+                        fit: BoxFit.fill,
                       ),
                     ],
                   ),
@@ -83,7 +85,7 @@ class PannelUpScreenView extends GetView {
                 },
                 calendarStyle: CalendarStyle(
                   selectedDecoration: BoxDecoration(
-                    color: Colors.blue,
+                    color: Color(0xFF5e4eaf),
                     shape: BoxShape.circle,
                   ),
                   todayDecoration: BoxDecoration(
