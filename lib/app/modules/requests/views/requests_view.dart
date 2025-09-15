@@ -10,21 +10,33 @@ class RequestsView extends GetView<RequestsController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(0xFF5e4eaf),
         title: Text(
           'requests'.tr,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.person_outline),
+          icon: const Icon(Icons.person_outline, size: 28, color: Colors.white),
           onPressed: () {
             Get.toNamed('/person-info');
           },
         ),
         actions: [
-          IconButton(icon: const Icon(Icons.add), onPressed: () {}),
           IconButton(
-            icon: const Icon(Icons.notifications_none),
+            icon: const Icon(Icons.add, size: 28, color: Colors.white),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(
+              Icons.notifications_none,
+              size: 28,
+              color: Colors.white,
+            ),
             onPressed: () {
               Get.toNamed('/notifications');
             },

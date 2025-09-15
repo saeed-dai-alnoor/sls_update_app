@@ -10,10 +10,18 @@ class MoreView extends GetView<MoreController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('more'.tr, style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: Color(0xFF5e4eaf),
+        title: Text(
+          'more'.tr,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontSize: 22,
+          ),
+        ),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.person_outline),
+          icon: const Icon(Icons.person_outline, size: 28, color: Colors.white),
 
           onPressed: () {
             Get.toNamed('/person-info');
@@ -21,7 +29,11 @@ class MoreView extends GetView<MoreController> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications_none),
+            icon: const Icon(
+              Icons.notifications_none,
+              size: 28,
+              color: Colors.white,
+            ),
             onPressed: () {
               Get.toNamed('/notifications');
             },

@@ -30,7 +30,16 @@ class MainNavigationView extends GetView<MainNavigationController> {
       ), // fotter sls_app
       bottomNavigationBar: Obx(
         () => BottomNavigationBar(
-          fixedColor: Color(0xFF5e4eaf),
+          // 1. لتغيير لون الخلفية
+          backgroundColor: Colors.grey[50], // نفس لون AppBar
+          // 2. لتكبير حجم الأيقونات
+          iconSize: 30.0, // حجم أكبر للأيقونات (كان الافتراضي 24)
+          // 3. لتكبير حجم النص
+          selectedFontSize: 18.0, // حجم النص للعنصر المختار
+          unselectedFontSize: 16.0, // حجم النص للعناصر الأخرى
+          // fixedColor: Color(0xFF5e4eaf),
+          selectedItemColor: Colors.black,
+          unselectedItemColor: Color(0xFF5e4eaf),
           type: BottomNavigationBarType.fixed,
           currentIndex: navController.currentIndex.value,
           onTap: (index) => navController.changePage(index),

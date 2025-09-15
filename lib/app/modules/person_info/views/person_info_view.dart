@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -10,9 +11,14 @@ class PersonInfoView extends GetView<PersonInfoController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xFF5e4eaf),
         elevation: 0,
         // toolbarHeight: 0, // No top bar
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          onPressed: () => Get.back(),
+          icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: 25),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

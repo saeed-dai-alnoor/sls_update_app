@@ -57,7 +57,7 @@ class HomeView extends GetView<HomeController> {
                         color: Colors.grey[50],
                         elevation: 0.5,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(3), // الزوايا
+                          borderRadius: BorderRadius.circular(16), // الزوايا
                           side: BorderSide(
                             color: Colors.black12, // لون البوردر
                             width: 2, // سماكة البوردر
@@ -154,6 +154,7 @@ class HomeView extends GetView<HomeController> {
       // appBar sls_app
       appBar: AppBar(
         backgroundColor: Color(0xFF5e4eaf),
+        centerTitle: true,
         leading: IconButton(
           onPressed: () {
             Get.toNamed('/person-info');

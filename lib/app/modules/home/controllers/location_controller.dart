@@ -16,7 +16,6 @@ class LocationController extends GetxController {
   Future<void> verifyLocation() async {
     isLoading.value = true;
     try {
-     
       Position pos = await Geolocator.getCurrentPosition();
       // print("إحداثياتي: ${pos.latitude}, ${pos.longitude}");
 
@@ -30,7 +29,7 @@ class LocationController extends GetxController {
         target.longitude,
       );
       // true meter إذا كنت ضمن نطاف 100
-      isSuccess.value = distance <= 150; // 150 متر
+      isSuccess.value = distance <= 300; // 150 متر
       // print('Is within range: ${isSuccess.value}');
       // print('The distance: $distance');
     } catch (e) {
