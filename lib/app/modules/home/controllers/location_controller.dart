@@ -17,9 +17,6 @@ class LocationController extends GetxController {
     isLoading.value = true;
     try {
       Position pos = await Geolocator.getCurrentPosition();
-      // print("إحداثياتي: ${pos.latitude}, ${pos.longitude}");
-
-      // const target = LatLng(15.648026, 32.621937); // إحداثياتك هنا
 
       const target = LatLng(15.643293, 32.612374);
       double distance = _calculateDistance(
@@ -29,10 +26,10 @@ class LocationController extends GetxController {
         target.longitude,
       );
       // true meter إذا كنت ضمن نطاف 100
-      isSuccess.value = distance <= 300; // 150 متر
+      isSuccess.value = distance >= 600; // 150 متر
+    } catch (e) {
       // print('Is within range: ${isSuccess.value}');
       // print('The distance: $distance');
-    } catch (e) {
       Get.snackbar("Oops!", e.toString());
     } finally {
       isLoading.value = false;

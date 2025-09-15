@@ -129,17 +129,19 @@ class CheckDoneView extends GetView<CheckDoneController> {
             ],
           ),
           SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              // homeController.isLoggedIn.value = true;
-              Get.back();
-            },
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 30),
-              backgroundColor: Colors.blue,
+          SizedBox(
+            child: ElevatedButton(
+              onPressed: () {
+                // homeController.isLoggedIn.value = true;
+                Get.back();
+              },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                backgroundColor: Color(0xFF5e4eaf),
+              ),
+              child: Text('done'.tr, style: TextStyle(fontSize: 28)),
             ),
-            child: Text('done'.tr, style: TextStyle(fontSize: 28)),
           ),
         ],
       ),
