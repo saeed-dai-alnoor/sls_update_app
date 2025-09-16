@@ -38,7 +38,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.CALENAR,
-      page: () => const CalenarView(),
+      page: () =>  CalenarView(),
       binding: CalenarBinding(),
     ),
     GetPage(

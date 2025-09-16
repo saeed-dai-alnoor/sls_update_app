@@ -9,7 +9,7 @@ import '../controllers/summary_controller.dart';
 
 class SummaryView extends GetView<SummaryController> {
   SummaryView({super.key});
-  final summarryController = Get.find<HomeController>();
+  final homeController = Get.find<HomeController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,52 +56,63 @@ class SummaryView extends GetView<SummaryController> {
                         ),
                         Text('workingHours'.tr, style: TextStyle(fontSize: 21)),
                         SizedBox(height: 8),
-                        Obx(
-                          () => Text(
-                            summarryController.workingHours.value,
+                        Obx(() {
+                          final data =
+                              homeController.displayedAttendanceData.value;
+                          final workingHours =
+                              data?['workingHours'] ?? '00:00:00';
+
+                          return Text(
+                            workingHours,
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
                             ),
-                          ),
-                        ),
+                          );
+                        }),
                         SizedBox(height: 12),
-                        summarryController.convertTimeStringToDouble() > 4.8
-                            ? Text(
-                                'hero'.tr,
-                                style: TextStyle(
-                                  fontSize: 21,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )
-                            : SizedBox.shrink(),
+                        // hoursValue > 4.8
+                        //     ? Text(
+                        //         'hero'.tr,
+                        //         style: TextStyle(
+                        //           fontSize: 21,
+                        //           fontWeight: FontWeight.bold,
+                        //         ),
+                        //       )
+                        //     : SizedBox.shrink(),
                       ],
                     ),
                   ),
                 ),
                 Align(
                   alignment: Alignment.topCenter,
-                  child: AnimatedRadialGauge(
-                    duration: const Duration(seconds: 2),
-                    radius: 160,
-                    value: summarryController.convertTimeStringToDouble() * 10,
+                  child: Obx(() {
+                    final data = homeController.displayedAttendanceData.value;
+                    final workingHours = data?['workingHours'] ?? '00:00:00';
+                    final hoursValue = _convertTimeStringToDouble(workingHours);
 
-                    axis: GaugeAxis(
-                      min: 0,
-                      max: 100,
-                      degrees: 180,
-                      style: const GaugeAxisStyle(thickness: 17),
+                    return AnimatedRadialGauge(
+                      duration: const Duration(seconds: 2),
+                      radius: 160,
+                      value: hoursValue * 10,
 
-                      progressBar: const GaugeProgressBar.rounded(
-                        color: Color(0xFF5e4eaf),
+                      axis: GaugeAxis(
+                        min: 0,
+                        max: 100,
+                        degrees: 180,
+                        style: const GaugeAxisStyle(thickness: 17),
+
+                        progressBar: const GaugeProgressBar.rounded(
+                          color: Color(0xFF5e4eaf),
+                        ),
+                        pointer: GaugePointer.needle(
+                          height: 0,
+                          width: 17,
+                          color: Colors.black,
+                        ),
                       ),
-                      pointer: GaugePointer.needle(
-                        height: 0,
-                        width: 17,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
+                    );
+                  }),
                 ),
                 Align(
                   alignment: Alignment.center,
@@ -117,15 +128,21 @@ class SummaryView extends GetView<SummaryController> {
                               iconColor: Colors.green,
 
                               title: 'checkedIn'.tr,
-                              subtitle: Obx(
-                                () => Text(
-                                  summarryController.loginTime.value,
+                              subtitle: Obx(() {
+                                final data = homeController
+                                    .displayedAttendanceData
+                                    .value;
+                                final loginTime =
+                                    data?['loginTime'] ?? '00:00:00';
+
+                                return Text(
+                                  loginTime,
                                   style: TextStyle(
                                     fontSize: 21,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                ),
-                              ),
+                                );
+                              }),
                               lastTitle: '',
 
                               backgroundColor: Colors.green,
@@ -139,17 +156,21 @@ class SummaryView extends GetView<SummaryController> {
                               icon: Icons.logout_rounded,
                               iconColor: Color(0xFFde6a6b),
                               title: 'checkedOut'.tr,
-                              subtitle: Obx(
-                                () => Text(
-                                  summarryController.logoutTime.value.isEmpty
-                                      ? '00:00:00'
-                                      : summarryController.logoutTime.value,
+                              subtitle: Obx(() {
+                                final data = homeController
+                                    .displayedAttendanceData
+                                    .value;
+                                final logoutTime =
+                                    data?['logoutTime'] ?? '00:00:00';
+
+                                return Text(
+                                  logoutTime,
                                   style: TextStyle(
                                     fontSize: 21,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                ),
-                              ),
+                                );
+                              }),
                               lastTitle: '',
 
                               onPressed: () {},
@@ -188,6 +209,15 @@ class SummaryView extends GetView<SummaryController> {
         ],
       ),
     );
+  }
+
+  // دالة مساعدة لتحويل الوقت
+  double _convertTimeStringToDouble(String time) {
+    if (time == '00:00:00') return 0.0;
+    List<String> parts = time.split(':');
+    int hours = int.parse(parts[0]);
+    int minutes = int.parse(parts[1]);
+    return hours + (minutes / 60);
   }
 }
 
@@ -289,73 +319,82 @@ class WeekViewWidget extends StatelessWidget {
     return Container(
       color: const Color(0xFFf7f7f7), // لون الخلفية الخاص بعرض الأسبوع
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-      child: Obx(() {
-        final today = homeController.loginTimeDuration.value ?? DateTime.now();
-        final currentWeekDates = List.generate(7, (index) {
-          // تعديل بسيط للمنطق ليكون أكثر أماناً
-          final dayOfWeek = today.weekday == 7 ? 0 : today.weekday; // الأحد = 0
-          return today.subtract(Duration(days: dayOfWeek - index));
-        });
-
-        final dayNames = [
-          'sun'.tr,
-          'mon'.tr,
-          'tue'.tr,
-          'wed'.tr,
-          'thu'.tr,
-          'fri'.tr,
-          'sat'.tr,
-        ];
-
-        return Column(
-          children: [
-            // أسماء أيام الأسبوع
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: List.generate(
-                7,
-                (index) => NameOfWeek(name: dayNames[index]),
-              ),
-            ),
-            const SizedBox(height: 16),
-            // أرقام الأيام
-            Row(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              'sun'.tr,
+              'mon'.tr,
+              'tue'.tr,
+              'wed'.tr,
+              'thu'.tr,
+              'fri'.tr,
+              'sat'.tr,
+            ].map((dayName) => NameOfWeek(name: dayName)).toList(),
+          ),
+          const SizedBox(height: 16),
+          // أرقام الأيام
+          Obx(() {
+            final today =
+                homeController.loginTimeDuration.value ?? DateTime.now();
+            final currentWeekDates = List.generate(7, (index) {
+              final dayOfWeek = today.weekday % 7;
+              return today.subtract(Duration(days: dayOfWeek - index));
+            });
+            return Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(7, (index) {
                 final date = currentWeekDates[index];
+                final isSelected = DateTimeCompare(
+                  homeController.selectedSummaryDate.value,
+                ).isSameDate(date);
                 final isToday =
                     date.day == DateTime.now().day &&
                     date.month == DateTime.now().month;
 
-                return Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: isToday
-                        ? const Color(0xFF5e4eaf)
-                        : Colors.transparent,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.black, width: .8),
-                  ),
-                  child: Center(
-                    child: Text(
-                      isToday
-                          ? '${date.day}/${date.month}'
-                          : date.day.toString(),
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: isToday ? Colors.white : Colors.black,
+                return GestureDetector(
+                  onTap: () {
+                    // 2. عند الضغط، قم بتغيير اليوم المختار
+                    homeController.changeSelectedSummaryDate(date);
+                  },
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? const Color(0xFF5e4eaf)
+                          : Colors.transparent,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.black, width: .8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        isToday
+                            ? '${date.day}/${date.month}'
+                            : date.day.toString(),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: isSelected ? Colors.white : Colors.black,
+                        ),
                       ),
                     ),
                   ),
                 );
               }),
-            ),
-          ],
-        );
-      }),
+            );
+          }),
+        ],
+      ),
     );
   }
 }
+
 //
+// أضف هذه الدالة المساعدة في أي مكان في الملف
+extension DateTimeCompare on DateTime {
+  bool isSameDate(DateTime other) {
+    return year == other.year && month == other.month && day == other.day;
+  }
+}

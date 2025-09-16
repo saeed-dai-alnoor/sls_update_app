@@ -13,41 +13,44 @@ class LanguageView extends GetView<LanguageController> {
   final LanguageController langController = Get.find();
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('selectLanguage'.tr),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Obx(
-            () => RadioListTile(
-              title: Text('العربية'),
-              value: 'ar',
+    return Container(
+      color: Colors.white,
+      child: AlertDialog(
+        title: Text('selectLanguage'.tr),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Obx(
+              () => RadioListTile(
+                title: Text('العربية'),
+                value: 'ar',
 
-              groupValue: langController.defaultLang,
-              onChanged: (value) {
-                getStorage.write('lang', 'ar');
-                controller.setDefaultLang('ar');
-                Get.updateLocale(Locale('ar'));
-              },
+                groupValue: langController.defaultLang,
+                onChanged: (value) {
+                  getStorage.write('lang', 'ar');
+                  controller.setDefaultLang('ar');
+                  Get.updateLocale(Locale('ar'));
+                },
+              ),
             ),
-          ),
-          Obx(
-            () => RadioListTile(
-              title: Text('English'),
-              value: 'en',
-              groupValue: langController.defaultLang,
-              onChanged: (value) {
-                getStorage.write('lang', 'en');
-                controller.setDefaultLang('en');
-                Get.updateLocale(Locale('en'));
-              },
+            Obx(
+              () => RadioListTile(
+                title: Text('English'),
+                value: 'en',
+                groupValue: langController.defaultLang,
+                onChanged: (value) {
+                  getStorage.write('lang', 'en');
+                  controller.setDefaultLang('en');
+                  Get.updateLocale(Locale('en'));
+                },
+              ),
             ),
-          ),
+          ],
+        ),
+        actions: [
+          IconButton(onPressed: () => Get.back(), icon: Icon(Icons.done)),
         ],
       ),
-      actions: [
-        IconButton(onPressed: () => Get.back(), icon: Icon(Icons.done)),
-      ],
     );
   }
 }

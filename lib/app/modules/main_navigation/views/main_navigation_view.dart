@@ -5,6 +5,7 @@ import 'package:sls_app/app/modules/home/views/home_view.dart';
 import 'package:sls_app/app/modules/more/views/more_view.dart';
 import 'package:sls_app/app/modules/requests/views/requests_view.dart';
 import 'package:sls_app/app/modules/summary/views/summary_view.dart';
+import '../../home/controllers/location_controller.dart';
 import '../controllers/main_navigation_controller.dart';
 
 class MainNavigationView extends GetView<MainNavigationController> {
@@ -12,7 +13,7 @@ class MainNavigationView extends GetView<MainNavigationController> {
   final MainNavigationController navController = Get.put(
     MainNavigationController(),
   );
-
+  final LocationController locationController = Get.find<LocationController>();
   final List<Widget> pages = [
     HomeView(),
     SummaryView(),
@@ -28,42 +29,50 @@ class MainNavigationView extends GetView<MainNavigationController> {
           children: pages,
         ),
       ), // fotter sls_app
-      bottomNavigationBar: Obx(
-        () => BottomNavigationBar(
-          // 1. لتغيير لون الخلفية
-          backgroundColor: Colors.grey[50], // نفس لون AppBar
-          // 2. لتكبير حجم الأيقونات
-          iconSize: 30.0, // حجم أكبر للأيقونات (كان الافتراضي 24)
-          // 3. لتكبير حجم النص
-          selectedFontSize: 18.0, // حجم النص للعنصر المختار
-          unselectedFontSize: 16.0, // حجم النص للعناصر الأخرى
-          // fixedColor: Color(0xFF5e4eaf),
+      bottomNavigationBar: Obx(() {
+        // --- بداية التعديل ---
+        // 3. الحصول على حالة التحميل الحالية
+        final bool isLoading = locationController.isLoading.value;
+        // --- نهاية التعديل ---
+
+        return BottomNavigationBar(
+          backgroundColor: Colors.grey[50],
+          iconSize: 30.0,
+          selectedFontSize: 18.0,
+          unselectedFontSize: 16.0,
           selectedItemColor: Colors.black,
-          unselectedItemColor: Color(0xFF5e4eaf),
+
+          // 4. تغيير لون العناصر غير النشطة بناءً على حالة التحميل
+          unselectedItemColor: isLoading
+              ? Colors.grey[300]
+              : const Color(0xFF5e4eaf),
+
           type: BottomNavigationBarType.fixed,
           currentIndex: navController.currentIndex.value,
-          onTap: (index) => navController.changePage(index),
+
+          // 5. تعطيل الضغط على الشريط بالكامل أثناء التحميل
+          onTap: isLoading ? null : (index) => navController.changePage(index),
+
           items: [
             BottomNavigationBarItem(
               label: 'home'.tr,
-              icon: Icon(Icons.fingerprint_sharp),
+              icon: const Icon(Icons.fingerprint_sharp),
             ),
             BottomNavigationBarItem(
               label: 'summary'.tr,
-              icon: Icon(Icons.speed_sharp),
+              icon: const Icon(Icons.speed_sharp),
             ),
             BottomNavigationBarItem(
               label: 'requests'.tr,
-              icon: Icon(Icons.auto_awesome_motion_outlined),
+              icon: const Icon(Icons.auto_awesome_motion_outlined),
             ),
-
             BottomNavigationBarItem(
               label: 'more'.tr,
-              icon: Icon(Icons.more_horiz),
+              icon: const Icon(Icons.more_horiz),
             ),
           ],
-        ),
-      ),
+        );
+      }),
     );
   }
 }

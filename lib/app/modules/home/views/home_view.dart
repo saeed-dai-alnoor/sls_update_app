@@ -52,6 +52,7 @@ class HomeView extends GetView<HomeController> {
                     margin: EdgeInsets.only(top: 12),
                     child: SizedBox(
                       height: 100,
+                      width: 300,
 
                       child: Card(
                         color: Colors.grey[50],
@@ -86,29 +87,28 @@ class HomeView extends GetView<HomeController> {
                     onTap: locationController.isLoading.value
                         ? null
                         : () async {
-                            // المنطق لم يتغير
+                            // 1. أظهر التحميل
                             locationController.isLoading.value = true;
+                            // 2. تحقق من الموقع
                             await locationController.verifyLocation();
 
+                            // --- بداية التعديل ---
+                            // 3. نفّذ الإجراء فقط في حالة النجاح
                             if (locationController.isSuccess.value) {
+                              // إذا كان المستخدم مسجل دخوله بالفعل (يريد تسجيل الخروج)
                               if (homeController.isLoggedIn.value) {
                                 homeController.logOut(context);
                                 Get.to(() => CheckDoneView());
-                              } else {
+                              }
+                              // إذا كان المستخدم غير مسجل (يريد تسجيل الدخول)
+                              else {
                                 homeController.logIn(context);
                                 homeController.markAttendance(
                                   homeController.selectedDate.value,
                                 );
                               }
+                              // قم بتبديل الحالة فقط إذا نجحت العملية
                               homeController.toggleAuth();
-                            } else {
-                              Get.defaultDialog(
-                                title: "📍 Oops!",
-                                middleText: 'messageScope'.tr,
-                                textConfirm: 'ok'.tr,
-                                confirmTextColor: Colors.white,
-                                onConfirm: () => Get.back(),
-                              );
                             }
                             locationController.isLoading.value = false;
                           },

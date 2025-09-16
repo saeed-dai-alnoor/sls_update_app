@@ -8,12 +8,13 @@ import 'package:sls_app/app/core/lang/languages.dart';
 
 import 'app/modules/calenar/controllers/calenar_controller.dart';
 import 'app/modules/home/controllers/home_controller.dart';
+import 'app/modules/home/controllers/location_controller.dart';
 import 'app/modules/main_navigation/views/main_navigation_view.dart';
 import 'app/modules/summary/controllers/summary_controller.dart';
 import 'app/routes/app_pages.dart';
 
-void main()  async{
- WidgetsFlutterBinding.ensureInitialized();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -24,7 +25,7 @@ void main()  async{
   Get.put(SummaryController());
   Get.put(HomeController());
   Get.put(CalenarController());
-  
+  Get.put(LocationController());
   runApp(
     GetMaterialApp(
       title: "Application",

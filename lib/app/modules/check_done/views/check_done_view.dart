@@ -7,7 +7,7 @@ import '../../home/controllers/home_controller.dart';
 
 class CheckDoneView extends GetView<CheckDoneController> {
   CheckDoneView({super.key});
-  final homeController = Get.put(HomeController());
+  final homeController = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +132,12 @@ class CheckDoneView extends GetView<CheckDoneController> {
           SizedBox(
             child: ElevatedButton(
               onPressed: () {
-                // homeController.isLoggedIn.value = true;
+                // 1. استدعاء دالة إعادة التعيين
+                homeController.resetDay();
+
+                // 2. العودة إلى الصفحة الرئيسية
+                // استخدم Get.offAllNamed('/main-navigation') أو ما يعادلها للعودة للشاشة الرئيسية
+                // أو ببساطة Get.back() إذا كانت HomeView هي الصفحة السابقة مباشرة
                 Get.back();
               },
               style: ElevatedButton.styleFrom(
