@@ -5,113 +5,30 @@ import 'package:intl/intl.dart';
 import 'package:sls_app/app/modules/theme/controllers/theme_controller.dart';
 
 class HomeController extends GetxController {
-  var isLoggedIn = false.obs;
-  var greeting = ''.obs; // متغير لتخزين التحية
+  // --- المتغيرات الأساسية ---
   final box = GetStorage();
-
-  // وقت الدخول
-  var loginTime = '00:00:00'.obs;
-  // لحساب المدة بين الدخول والخروج في حالة تغير اللغة
-  var loginTimeDuration = Rxn<DateTime>();
-  // وقت الخروج
-  var logoutTime = '00:00:00'.obs;
-  // المدة بين الدخول والخروج
-  var duration = '00:00:00'.obs;
-  // المدة بين الدخول والخروج من غير عمل فورمات ساعات ودقائق
-  var workingHours = '00:00:00'.obs;
-  // متغيرات للتحكم في الواجهة
-  var isDarkMode = false.obs;
-  // إضافة هذه المتغيرات
-  Rx<DateTime> selectedDate = DateTime.now().obs;
+  var isLoggedIn = false.obs;
+  var greetingKey = ''.obs;
+  var duration = '00:00:00'.obs; // لإظهار المدة في CheckDoneView
   RxMap<DateTime, bool> attendanceRecords = <DateTime, bool>{}.obs;
-  final attendanceDates = <DateTime, dynamic>{}.obs;
+  // --- متغيرات الجلسة الحية ---
+  var loginTime = '00:00:00'.obs;
+  var logoutTime = '00:00:00'.obs;
+  var workingHours = '00:00:00'.obs;
+  var loginTimeDuration = Rxn<DateTime>();
 
-  var greetingKey = ''.obs; // متغير لتخزين مفتاح التحية (Key)
+  // --- متغيرات التحكم في الواجهة ---
+  var selectedDate = DateTime.now().obs; // للتقويم في PannelUp
+  var selectedSummaryDate = DateTime.now().obs; // لصفحة الملخص
 
-  /// دالة لإعادة تعيين حالة اليوم بعد انتهاء العمل.
-  void resetDay() {
-    // 1. إعادة حالة تسجيل الدخول إلى "مسجل خروج"
-    isLoggedIn.value = false;
+  // --- (الحل النهائي) متغير "المحفز" ---
+  var summaryViewUpdater = 0.obs;
 
-    // 2. تصفير جميع الأوقات
-    loginTime.value = '00:00:00';
-    logoutTime.value = '00:00:00';
-    duration.value = '00:00:00';
-    workingHours.value = '00:00:00';
-    loginTimeDuration.value = null;
-  }
-
-  // دالة لتحديد التحية بناءً على الوقت
-  void _updateGreetingKey() {
-    final hour = DateTime.now().hour;
-
-    if (hour < 12) {
-      greetingKey.value = 'morning'; // خزّن المفتاح فقط
-    } else if (hour < 17) {
-      greetingKey.value = 'afternoon'; // خزّن المفتاح فقط
-    } else {
-      greetingKey.value = 'evening'; // خزّن المفتاح فقط
-    }
-  }
-
-  // دالة لتسجيل الحضور
   void markAttendance(DateTime date) {
     attendanceRecords[date] = true;
-    update(); // لتحديث الواجهة
+    update(); // لتحديث الواجهة (إذا كان هناك واجهة تستمع لهذا التغيير)
   }
 
-  // دالة للتحقق من وجود حضور في تاريخ معين
-  bool isDateMarked(DateTime date) {
-    return attendanceRecords[date] ?? false;
-  }
-
-  // دالة تسجيل الدخول
-  void logIn(BuildContext context) {
-    final locale = Localizations.localeOf(context).languageCode; // 'ar' or 'en'
-    loginTime.value = DateFormat('hh:mm:ss a', locale).format(DateTime.now());
-    loginTimeDuration.value = DateTime.now();
-    logoutTime.value = '';
-    duration.value = '';
-  }
-
-  // دالة تسجيل الخروج
-  void logOut(BuildContext context) {
-    // isLoggedIn.value = false;
-
-    // Get the current locale
-    final locale = Localizations.localeOf(context).languageCode; // 'ar' or 'en'
-
-    // Format time with AM/PM based on locale
-    logoutTime.value = DateFormat('hh:mm:ss a', locale).format(DateTime.now());
-
-    if (loginTime.value.isNotEmpty) {
-      final login = loginTimeDuration.value!;
-
-      final diff = DateTime.now().difference(login);
-      duration.value =
-          '${diff.inHours} ${_translate('hours', locale)} '
-          '${diff.inMinutes.remainder(60)} ${_translate('minutes', locale)} '
-          '${diff.inSeconds.remainder(60)} ${_translate('seconds', locale)}';
-      workingHours.value =
-          '${diff.inHours}:${diff.inMinutes.remainder(60)}:${diff.inSeconds.remainder(60)}';
-      String todayKey = DateFormat('yyyy-MM-dd').format(DateTime.now());
-
-      // 2. إنشاء خريطة (Map) تحتوي على بيانات اليوم
-      Map<String, dynamic> attendanceData = {
-        'loginTime': loginTime.value,
-        'logoutTime': logoutTime.value,
-        'workingHours': workingHours.value,
-        'date': DateTime.now().toIso8601String(), // حفظ التاريخ كاملاً
-      };
-
-      // 3. حفظ الخريطة في GetStorage باستخدام مفتاح اليوم
-      box.write(todayKey, attendanceData);
-      // print("✅ تم حفظ بيانات يوم $todayKey في GetStorage.");
-      // --- نهاية الإضافة الجديدة ---
-    }
-  }
-
-  // Helper function to translate units
   String _translate(String unit, String locale) {
     return {
       'ar': {'hours': 'ساعات', 'minutes': 'دقائق', 'seconds': 'ثواني'},
@@ -119,61 +36,95 @@ class HomeController extends GetxController {
     }[locale]![unit]!;
   }
 
-  // دالة لتبديل حالة الدخول والخروج
+  @override
+  void onInit() {
+    super.onInit();
+    Get.lazyPut(() => ThemeController());
+    _updateGreetingKey();
+  }
+
+  // --- دوال دورة العمل ---
+
+  void logIn(BuildContext context) {
+    final locale = Localizations.localeOf(context).languageCode;
+    loginTime.value = DateFormat('hh:mm:ss a', locale).format(DateTime.now());
+    loginTimeDuration.value = DateTime.now();
+    logoutTime.value = '';
+    workingHours.value = '00:00:00';
+
+    // حفظ السجل المبدئي
+    String todayKey = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    Map<String, dynamic> initialData = {
+      'loginTime': loginTime.value,
+      'logoutTime': '',
+      'workingHours': '00:00:00',
+      'date': DateTime.now().toIso8601String(),
+    };
+    box.write(todayKey, initialData);
+    // print("✅ [LogIn] تم حفظ سجل الحضور المبدئي.");
+
+    // تحديث "المحفز"
+    summaryViewUpdater.value++;
+  }
+
+  void logOut(BuildContext context) {
+    if (loginTimeDuration.value == null) return;
+
+    final locale = Localizations.localeOf(context).languageCode;
+    logoutTime.value = DateFormat('hh:mm:ss a', locale).format(DateTime.now());
+
+    final diff = DateTime.now().difference(loginTimeDuration.value!);
+    // --- بداية التعديل ---
+    // إعادة حساب duration هنا
+    duration.value =
+        '${diff.inHours} ${_translate('hours', locale)} '
+        '${diff.inMinutes.remainder(60)} ${_translate('minutes', locale)} '
+        '${diff.inSeconds.remainder(60)} ${_translate('seconds', locale)}';
+    // --- نهاية التعديل ---
+    workingHours.value =
+        '${diff.inHours}:${diff.inMinutes.remainder(60)}:${diff.inSeconds.remainder(60)}';
+
+    // تحديث السجل في قاعدة البيانات
+    String todayKey = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    Map<String, dynamic> existingData = box.read(todayKey) ?? {};
+    existingData['logoutTime'] = logoutTime.value;
+    existingData['workingHours'] = workingHours.value;
+    box.write(todayKey, existingData);
+    // print("✅ [LogOut] تم تحديث سجل الخروج.");
+
+    // تحديث "المحفز"
+    summaryViewUpdater.value++;
+  }
+
+  void resetDay() {
+    isLoggedIn.value = false;
+    loginTime.value = '00:00:00';
+    logoutTime.value = '00:00:00';
+    workingHours.value = '00:00:00';
+    loginTimeDuration.value = null;
+
+    // تحديث "المحفز" لضمان تصفير الواجهة
+    summaryViewUpdater.value++;
+  }
+
+  // --- دوال مساعدة ---
+
   void toggleAuth() {
     isLoggedIn.toggle();
   }
 
-  // دالة لتحويل وقت من نص إلى double
-  double convertTimeStringToDouble() {
-    List<String> parts = workingHours.value.split(':');
-    int hours = int.parse(parts[0]);
-    int minutes = int.parse(parts[1]);
-    return hours + (minutes / 60);
-  }
-
-  var selectedSummaryDate = DateTime.now().obs;
-
-  /// البيانات الخاصة باليوم المختار للعرض.
-  var displayedAttendanceData = Rxn<Map<String, dynamic>>();
-  // --- نهاية الإضافة الجديدة ---
-
-  // ...
-
-  // --- دالة جديدة لتغيير اليوم المعروض ---
   void changeSelectedSummaryDate(DateTime newDate) {
     selectedSummaryDate.value = newDate;
-    // ابحث عن بيانات هذا اليوم في GetStorage
-    String dateKey = DateFormat('yyyy-MM-dd').format(newDate);
-    Map<String, dynamic>? data = box.read(dateKey);
+  }
 
-    if (data != null) {
-      // إذا وجدت بيانات، قم بتحديث المتغير الخاص بالعرض
-      displayedAttendanceData.value = data;
-      // print("📊 عرض بيانات يوم: $dateKey");
+  void _updateGreetingKey() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) {
+      greetingKey.value = 'morning';
+    } else if (hour < 17) {
+      greetingKey.value = 'afternoon';
     } else {
-      // إذا لم تجد بيانات، قم بتصفير المتغير
-      displayedAttendanceData.value = null;
-      // print("📊 لا توجد بيانات ليوم: $dateKey");
+      greetingKey.value = 'evening';
     }
-  }
-
-
- @override
-  void onInit() {
-    super.onInit();
-    Get.lazyPut(() => ThemeController());
-    _updateGreetingKey(); // استدعاء الدالة لتعيين المفتاح الأوليس
-    changeSelectedSummaryDate(DateTime.now());
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
   }
 }

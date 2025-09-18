@@ -28,7 +28,7 @@ void main() async {
   Get.put(LocationController());
   runApp(
     GetMaterialApp(
-      title: "Application",
+      title: "SLS App",
       // initialRoute: AppPages.INITIAL,
       locale: getStorage.read('lang') == 'ar' || getStorage.read('lang') == null
           ? const Locale('ar')

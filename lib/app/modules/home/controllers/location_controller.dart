@@ -58,7 +58,7 @@ class LocationController extends GetxController {
         target.longitude,
       );
       // 5. التحقق من النطاق
-      if (distance <= 300) {
+      if (distance <= 330) {
         isSuccess.value = true;
         Get.snackbar(
           "نجاح",

@@ -132,12 +132,9 @@ class CheckDoneView extends GetView<CheckDoneController> {
           SizedBox(
             child: ElevatedButton(
               onPressed: () {
-                // 1. استدعاء دالة إعادة التعيين
+                // 1. استدعاء دالة إعادة تعيين الحالة الحية
                 homeController.resetDay();
-
-                // 2. العودة إلى الصفحة الرئيسية
-                // استخدم Get.offAllNamed('/main-navigation') أو ما يعادلها للعودة للشاشة الرئيسية
-                // أو ببساطة Get.back() إذا كانت HomeView هي الصفحة السابقة مباشرة
+                // 3. العودة إلى الصفحة الرئيسية
                 Get.back();
               },
               style: ElevatedButton.styleFrom(
